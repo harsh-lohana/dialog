@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -29,17 +28,15 @@ const LoginPage = () => {
       );
       toast.success("Logged in!");
       localStorage.setItem("userInfo", JSON.stringify(data));
-      setLoading(false);
       navigate("/chats");
     } catch (error) {
-      setError(error.response.data.message);
       toast.error("Invalid email or password!");
       setLoading(false);
-      console.log(error.message);
+      console.log(error);
     }
   };
 
-  const revealTestUSer = () => {
+  const revealTestUser = () => {
     setEmail("test@test.com");
     setPassword("test");
     toast.success("Test user revealed!");
@@ -89,7 +86,7 @@ const LoginPage = () => {
           Login
         </button>
         <button
-          onClick={revealTestUSer}
+          onClick={revealTestUser}
           type="button"
           className="border-solid border-2 bg-blue-300 font-semibold border-blue-500 text-blue-700 rounded-md py-1 px-2"
         >
