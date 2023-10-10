@@ -61,7 +61,7 @@ const UserChats = ({fetchAgain}) => {
               key={chat._id}
             >
               <Text>
-                {!chat.isGroup ? getSender(loggedUser, chat.users) : chat.name}
+                {!chat.isGroup ? getSender(loggedUser, chat.users).name : chat.name}
               </Text>
               {chat.latestMessage && (
                 <Text fontSize="xs">

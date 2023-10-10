@@ -82,6 +82,7 @@ const GroupModal = ({ children }) => {
       );
       setChats([data, ...chats]);
       onClose();
+      console.log(data.admin);
       toast.success("Group created successfully!");
     } catch (error) {
       toast.error("Something went wrong!");
@@ -100,18 +101,26 @@ const GroupModal = ({ children }) => {
           <ModalCloseButton />
           <ModalBody d="flex" flexDir="column" alignItems="center">
             <form>
-              <input
-                type="text"
-                placeholder="Group name"
-                onChange={(e) => setGroupChatName(e.target.value)}
-                className="w-[300px] mb-3 border-solid border-2 border-blue-500 rounded-md bg-blue-300 h-8"
-              />
-              <input
-                type="text"
-                placeholder="Add users"
-                onChange={(e) => handleSearch(e.target.value)}
-                className="w-[300px] border-solid border-2 border-blue-500 rounded-md bg-blue-300 h-8"
-              />
+              <div className="flex flex-col gap-1">
+                <label htmlFor="name">Group name</label>
+                <input
+                  type="text"
+                  id="name"
+                  placeholder="Group name"
+                  onChange={(e) => setGroupChatName(e.target.value)}
+                  className="w-[300px] mb-3 border-solid border-2 border-blue-500 rounded-md bg-blue-300 h-8"
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label htmlFor="users">Add users</label>
+                <input
+                  type="text"
+                  id="users"
+                  placeholder="Add users"
+                  onChange={(e) => handleSearch(e.target.value)}
+                  className="w-[300px] border-solid border-2 border-blue-500 rounded-md bg-blue-300 h-8"
+                />
+              </div>
             </form>
             <div className="flex">
               {selectedUsers.map((u) => (
