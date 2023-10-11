@@ -5,15 +5,15 @@ import { useContext, useEffect } from "react";
 const LandingPage = () => {
   const navigate = useNavigate();
   const { user, setUser } = useContext(ChatContext);
-  useEffect(() => {
-    const userInfo = localStorage.getItem("userInfo");
-    if (!userInfo) {
-      navigate("/login");
-    } else {
-      setUser(userInfo);
-      navigate("/chats");
-    }
-  }, []);
+  // useEffect(() => {
+  //   const userInfo = localStorage.getItem("userInfo");
+  //   if (!userInfo) {
+  //     navigate("/login");
+  //   } else {
+  //     setUser(userInfo);
+  //     navigate("/chats");
+  //   }
+  // }, []);
   return (
     <div className="flex flex-col justify-center items-center h-screen">
       <h1 className="text-5xl text-blue-500 font-bold">Dialog</h1>

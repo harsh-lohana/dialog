@@ -8,7 +8,7 @@ import { Text } from "@chakra-ui/react";
 import { getSender } from "../utils/chatLogic";
 import GroupModal from "./GroupModal";
 
-const UserChats = ({fetchAgain}) => {
+const UserChats = ({ fetchAgain }) => {
   const [loggedUser, setLoggedUser] = useState();
   const { user, chats, selectedChat, setChats, setSelectedChat } =
     useContext(ChatContext);
@@ -47,6 +47,7 @@ const UserChats = ({fetchAgain}) => {
         <Stack overflowY="scroll" className="bg-gray-500 w-full">
           {chats.map((chat) => (
             <Box
+              className="flex gap-2"
               onClick={() => setSelectedChat(chat)}
               cursor="pointer"
               bg={selectedChat === chat ? "#64B5F6" : "#90CAF9"}
@@ -55,22 +56,33 @@ const UserChats = ({fetchAgain}) => {
               py={2}
               mx={2}
               my={1}
-              h={8}
+              h={16}
               w="95%"
               borderRadius="lg"
               key={chat._id}
             >
-              <Text>
-                {!chat.isGroup ? getSender(loggedUser, chat.users).name : chat.name}
-              </Text>
-              {chat.latestMessage && (
-                <Text fontSize="xs">
-                  <b>{chat.latestMessage.sender.name} : </b>
-                  {chat.latestMessage.content.length > 50
-                    ? chat.latestMessage.content.substring(0, 51) + "..."
-                    : chat.latestMessage.content}
+              {!chat.isGroup ? (
+                <img
+                  src={getSender(loggedUser, chat.users).dp}
+                  alt="dp"
+                  className="w-10 h-10 rounded-full"
+                />
+              ) : null}
+              <div>
+                <Text className="text-xl font-bold">
+                  {!chat.isGroup
+                    ? getSender(loggedUser, chat.users).name
+                    : chat.name}
                 </Text>
-              )}
+                {chat.latestMessage && (
+                  <Text fontSize="xs">
+                    <b>{chat.latestMessage.sender.name} : </b>
+                    {chat.latestMessage.content.length > 50
+                      ? chat.latestMessage.content.substring(0, 51) + "..."
+                      : chat.latestMessage.content}
+                  </Text>
+                )}
+              </div>
             </Box>
           ))}
         </Stack>
