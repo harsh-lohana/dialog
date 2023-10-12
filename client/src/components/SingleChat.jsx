@@ -17,7 +17,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     if (!selectedChat) {
       return;
     } else {
-      console.log(user.token);
       try {
         setLoading(true);
         const config = {
@@ -27,7 +26,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           },
         };
         setLoading(true);
-        console.log(selectedChat._id);
         const { data } = await axios.get(
           `/api/message/${selectedChat._id}`,
           config
@@ -106,7 +104,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             </div>
           )}
           <div className="h-[88.15%] min-w-full flex items-center justify-center">
-            {loading ? <Loader /> : <h1>messages</h1>}
+            {loading ? <Loader /> : <div>{messages.map(m => <h1>{m.content}</h1>)}</div>}
           </div>
           <form className="flex justify-between items-start overflow-hidden rounded-b-xl ml-3">
             <input

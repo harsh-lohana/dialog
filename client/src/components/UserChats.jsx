@@ -17,6 +17,7 @@ const UserChats = ({ fetchAgain }) => {
     try {
       const config = {
         headers: {
+          "Content-type": "application/json",
           Authorization: `Bearer ${user.token}`,
         },
       };
