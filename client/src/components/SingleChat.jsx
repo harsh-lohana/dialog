@@ -17,22 +17,21 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     if (!selectedChat) {
       return;
     } else {
-      console.log(1);
+      console.log(user.token);
       try {
+        setLoading(true);
         const config = {
           headers: {
+            "Content-type": "application/json",
             Authorization: `Bearer ${user.token}`,
           },
         };
-        console.log(2);
+        setLoading(true);
+        console.log(selectedChat._id);
         const { data } = await axios.get(
-          "/api/message",
-          {
-            chatId: selectedChat._id,
-          },
+          `/api/message/${selectedChat._id}`,
           config
         );
-        console.log(3);
         console.log(data);
         setMessages(data);
         setLoading(false);
@@ -65,6 +64,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           },
           config
         );
+        console.log(data);
         setMessages([...messages, data]);
       } catch (error) {
         toast.error("Something went wrong!");
