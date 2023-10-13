@@ -5,6 +5,10 @@ import UpdateGroupModal from "./UpdateGroupModal";
 import Loader from "./Loader";
 import axios from "axios";
 import toast from "react-hot-toast";
+import io from "socket.io-client";
+
+const ENDPOINT = "http://localhost:5000";
+let socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const { user, selectedChat } = useContext(ChatContext);
@@ -12,6 +16,13 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
+  const [socketConnected, setSocketConnected] = useState(false);
+
+  useEffect(() => {
+    socket = io(ENDPOINT);
+    socket.emit("setup", user);
+    socket.on("connection", () => setSocketConnected(true));
+  }, []);
 
   const fetchMessages = async () => {
     if (!selectedChat) {
@@ -32,6 +43,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         );
         console.log(data);
         setMessages(data);
+        socket.emit("join chat", selectedChat._id);
         setLoading(false);
       } catch (error) {
         toast.error("Something went wrong!");
@@ -62,7 +74,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           },
           config
         );
-        console.log(data);
+        socket.emit("new message", data);
         setMessages([...messages, data]);
       } catch (error) {
         toast.error("Something went wrong!");
@@ -73,7 +85,21 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   useEffect(() => {
     fetchMessages();
+    selectedChatCompare = selectedChat;
   }, [selectedChat]);
+
+  useEffect(() => {
+    socket.on("message received", (newMessageRecieved) => {
+      if (
+        !selectedChatCompare || 
+        selectedChatCompare._id !== newMessageRecieved.chat._id
+      ) {
+        return;
+      } else {
+        setMessages([...messages, newMessageRecieved]);
+      }
+    });
+  });
 
   return (
     <>
@@ -103,8 +129,27 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               </h3>
             </div>
           )}
-          <div className="h-[88.15%] min-w-full flex items-center justify-center">
-            {loading ? <Loader /> : <div>{messages.map(m => <h1>{m.content}</h1>)}</div>}
+          <div className="h-[88.15%] w-full flex">
+            {loading ? (
+              <Loader />
+            ) : (
+              <div className="w-[95%] overflow-y-scroll">
+                <div className="flex flex-col">
+                  {messages.map((m) => (
+                    <div
+                    key={m._id}
+                      className={`chat chat-${
+                        user._id === m.sender._id ? "end" : "start"
+                      }`}
+                    >
+                      <div className={`chat-bubble px-2 py-1 mx-2 rounded-lg`}>
+                        {m.content}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
           <form className="flex justify-between items-start overflow-hidden rounded-b-xl ml-3">
             <input
