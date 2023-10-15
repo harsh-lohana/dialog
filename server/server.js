@@ -6,6 +6,7 @@ const chatRoutes = require("./routes/chatRoutes");
 const messageRoutes = require("./routes/messageRoutes");
 const { notFound, errorHandler } = require("./middlewares/errorMiddleware");
 const { Socket } = require("socket.io");
+const path = require("path");
 
 const app = express();
 dotenv.config();
@@ -18,11 +19,23 @@ app.use("/api/users", userRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/message", messageRoutes);
 
-const PORT = process.env.PORT || 5000;
+// ---------- depolyment ----------
 
-app.get("/api", (req, res) => {
-  res.send("API is running!");
-});
+const __currdir = path.resolve();
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__currdir, "/client/dist")));
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__currdir, "client", "dist", "index.html"));
+  });
+} else {
+  app.get("/", (req, res) => {
+    res.send("API is running!");
+  });
+}
+
+// ---------- depolyment ----------
+
+const PORT = process.env.PORT || 5000;
 
 const server = app.listen(PORT, () => {
   console.log(`Server started on PORT ${PORT}`);
